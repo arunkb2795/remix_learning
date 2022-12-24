@@ -9,8 +9,7 @@ import {
   useCatch,
 } from "@remix-run/react";
 
-import styles from "~/styles/main.css";
-import MainNavigation from "./components/MainNavigation";
+import sharedStyles from "~/styles/shared.css";
 
 export const meta = () => ({
   charset: "utf-8",
@@ -23,12 +22,19 @@ export default function App() {
     <html lang="en">
       <head>
         <Meta />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="true"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap"
+          rel="stylesheet"
+        />
         <Links />
       </head>
       <body>
-        <header>
-          <MainNavigation />
-        </header>
         <Outlet />
         <ScrollRestoration />
         <Scripts />
@@ -49,14 +55,11 @@ export function CatchBoundary() {
         <title>{caughtResponse.statusText}</title>
       </head>
       <body>
-        <header>
-          <MainNavigation />
-        </header>
         <main className="error">
           <h1>{caughtResponse.statusText}</h1>
           <p>{message}</p>
           <p>
-            Back to safety <Link to="/">Safety</Link>
+            Back to <Link to="/">Safety</Link>
           </p>
         </main>
         <ScrollRestoration />
@@ -76,14 +79,11 @@ export function ErrorBoundary({ error }) {
         <title>An Error Occurred</title>
       </head>
       <body>
-        <header>
-          <MainNavigation />
-        </header>
         <main className="error">
           <h1>An Error Occurred</h1>
           <p>{error.message}</p>
           <p>
-            Back to safety <Link to="/">Safety</Link>
+            Back to <Link to="/">Safety</Link>
           </p>
         </main>
         <ScrollRestoration />
@@ -95,5 +95,5 @@ export function ErrorBoundary({ error }) {
 }
 
 export function links() {
-  return [{ rel: "stylesheet", href: styles }];
+  return [{ rel: "stylesheet", href: sharedStyles }];
 }

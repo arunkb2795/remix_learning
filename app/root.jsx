@@ -8,6 +8,7 @@ import {
   ScrollRestoration,
   useCatch,
 } from "@remix-run/react";
+import Error from "~/components/util/Error";
 
 import sharedStyles from "~/styles/shared.css";
 
@@ -17,10 +18,11 @@ export const meta = () => ({
   viewport: "width=device-width,initial-scale=1",
 });
 
-export default function App() {
+function Document({ title, children }) {
   return (
     <html lang="en">
       <head>
+        <title>{title}</title>
         <Meta />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -35,12 +37,20 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        {children}
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
       </body>
     </html>
+  );
+}
+
+export default function App() {
+  return (
+    <Document>
+      <Outlet />
+    </Document>
   );
 }
 
@@ -48,49 +58,27 @@ export function CatchBoundary() {
   const caughtResponse = useCatch();
   const message = caughtResponse.data?.message || "Something went wrong!";
   return (
-    <html lang="en">
-      <head>
-        <Meta />
-        <Links />
-        <title>{caughtResponse.statusText}</title>
-      </head>
-      <body>
-        <main className="error">
-          <h1>{caughtResponse.statusText}</h1>
-          <p>{message}</p>
-          <p>
-            Back to <Link to="/">Safety</Link>
-          </p>
-        </main>
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
-    </html>
+    <Document title={caughtResponse.statusText}>
+      <Error title={caughtResponse.statusText}>
+        <p>{message}</p>
+        <p>
+          Back to <Link to="/">Safety</Link>.
+        </p>
+      </Error>
+    </Document>
   );
 }
 
 export function ErrorBoundary({ error }) {
   return (
-    <html lang="en">
-      <head>
-        <Meta />
-        <Links />
-        <title>An Error Occurred</title>
-      </head>
-      <body>
-        <main className="error">
-          <h1>An Error Occurred</h1>
-          <p>{error.message}</p>
-          <p>
-            Back to <Link to="/">Safety</Link>
-          </p>
-        </main>
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
-    </html>
+    <Document title="An error occured">
+      <Error title="An error occured">
+        <p>{error.message || "Something went wrong!"}</p>
+        <p>
+          Back to <Link to="/">Safety</Link>.
+        </p>
+      </Error>
+    </Document>
   );
 }
 
